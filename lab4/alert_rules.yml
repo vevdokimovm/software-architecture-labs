@@ -1,0 +1,35 @@
+groups:
+  - name: app_alerts
+    rules:
+      - alert: HighRequestRate
+        expr: rate(app_requests_total[1m]) > 5
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          description: "Слишком частые запросы к API"
+
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, sum(rate(app_request_latency_seconds_bucket[1m])) by (le)) > 0.5
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          description: "Высокая задержка в ответах"
+
+      - alert: AppDown
+        expr: up{job="app"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          description: "Сервис app недоступен"
+
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis упал"
+          description: "The Redis server is down and not responding."
