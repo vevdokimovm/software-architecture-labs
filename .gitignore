@@ -177,3 +177,9 @@ venv/
 .vscode/
 .venv/
 
+
+# Env files
+.env
+
+# Databases
+*.db
